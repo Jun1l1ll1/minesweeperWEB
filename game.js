@@ -1,8 +1,6 @@
 
 let size = 15; // Should be odd
 let bomb_percent = 6; //(1/nr)
-let mode = "Dark";
-let color = "Green";
 const modes = {
     "Dark":{
         "Green":{"bg":"#e0c995", "font":"#000000", "board":"#2b9e4d", "bomb":"255, 0, 0"}
@@ -12,6 +10,9 @@ const modes = {
         "Pink":{"bg":"#79b8ff", "font":"#72203f", "board":"#ffaccc", "bomb":"255, 255, 255"}
     }
 }
+
+let current_colors = {"bg":"#e0c995", "font":"#000000", "board":"#2b9e4d", "bomb":"255, 0, 0"};
+
 displayColorsOnHTML();
 displaySettingsOnHTML();
 
@@ -296,6 +297,23 @@ function restartGame() {
 }
 
 
+function rgbToHex(rgb_list) {
+    function componentToHex(c) {
+        var hex = parseInt(c).toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    return "#" + componentToHex(rgb_list[0]) + componentToHex(rgb_list[1]) + componentToHex(rgb_list[2]);
+}
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        "r": parseInt(result[1], 16),
+        "g": parseInt(result[2], 16),
+        "b": parseInt(result[3], 16)
+    } : null;
+}
+
 
 
 
@@ -304,10 +322,14 @@ function displayColorsOnHTML() {
     let board_bg_div = document.getElementById("game_board_bg")
     let r = document.querySelector(':root');
 
-    board_bg_div.style.backgroundColor = modes[mode][color].bg;
-    board_bg_div.style.color = modes[mode][color].font;
-    r.style.setProperty('--bomb_color', modes[mode][color].bomb);
-    r.style.setProperty('--board_color', modes[mode][color].board);
+    board_bg_div.style.backgroundColor = current_colors.bg;
+    board_bg_div.style.color = current_colors.font;
+    r.style.setProperty('--bomb_color', current_colors.bomb);
+    r.style.setProperty('--board_color', current_colors.board);
+}
+
+function changeColorToPreset(mode, color) {
+    current_colors = modes[mode][color];
 }
 
 
@@ -315,6 +337,12 @@ function displayColorsOnHTML() {
 
 function displaySettingsOnHTML() {
     document.getElementById("map_size").value = size;
+    document.getElementById("bomb_percent").value = bomb_percent;
+
+    document.getElementById("overlay_color").value = current_colors.board;
+    document.getElementById("open_color").value = current_colors.bg;
+    document.getElementById("text_color").value = current_colors.font;
+    document.getElementById("bomb_color").value = rgbToHex(current_colors.bomb.split(", "));
 }
 
 function showSettings() {
@@ -357,7 +385,14 @@ function saveSettings() {
         document.getElementById("bomb_percent_note").style.display = "block";
     }
 
+    current_colors.board = document.getElementById("overlay_color").value;
+    current_colors.bg = document.getElementById("open_color").value;
+    current_colors.font = document.getElementById("text_color").value;
+    let bomb_color_hex = hexToRgb(document.getElementById("bomb_color").value)
+    current_colors.bomb = bomb_color_hex["r"]+", "+bomb_color_hex["g"]+", "+bomb_color_hex["b"];
+
     if (all_correct) {
+        displayColorsOnHTML();
         showSettings();
     }
 }
