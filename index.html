@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="center_orientationaly">
+        <div>
+            <div id="game_stat_cont">
+                <div id="bomb_count">00</div>
+                <div id="timer">00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="center_child">
+        <div id="game_board_bg">
+            <div id="game_board"></div>
+        </div>
+    </div>
+
+    <div class="center_child_above" id="end_overlay">
+        <img class="gif" id="won_gif" src="assets/YAY.gif" alt="yay">
+        <img class="gif" id="lost_gif" src="assets/sad.gif" alt="sad">
+        <div id="settings">
+            <label for="map_size">Size</label>
+            <input type="number" name="map_size" id="map_size" value="9"/>
+            <span id="map_size_note" class="setting_note">Size must be an odd number between 0 and 22</span><br/>
+
+            <label for="bomb_percent">Bomb Chance - 1 in</label>
+            <input type="number" name="bomb_percent" id="bomb_percent" value="6">
+            <span id="bomb_percent_note" class="setting_note">Number must be more then 0</span><br/>
+        </div>
+
+        <div id="game_menu">
+            <button id="restart_btn" onclick="restartGame()">Restart</button>
+            <button id="open_setting_btn" onclick="showSettings()">Setting</button>
+            <button id="save_setting_btn" style="display: none;" onclick="saveSettings()">Save</button>
+        </div>
+    </div>
+</body>
+<style>
+    body, html {
+        margin: 0px;
+        padding: 0px;
+        background-color: #18111a;
+    }
+    body *, html * {
+        font-family: monospace;
+    }
+
+    button {
+        background-color: #18111a;
+        color: white;
+        padding: 5px;
+        font-size: larger;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    :root {
+        --bomb_color: 255, 255, 255;
+        --board_color: #ffaccc;
+    }
+
+
+
+    .center_orientationaly {
+        position: absolute;
+        display: flex;
+
+        @media (orientation : landscape) {
+            height: 100vh;
+            width: 0px;
+            align-items: center;
+        }
+        @media (orientation : portrait) {
+            height: 0px;
+            width: 100vw;
+            justify-content: center; 
+        }
+
+        >div {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+    }
+
+    #game_stat_cont {
+        position: absolute;
+        z-index: 10;
+
+        @media (orientation : landscape) {
+            left: 2vw;
+        }
+        @media (orientation : portrait) {
+            top: 2vh;
+        }
+
+        display: flex;
+
+        color: red;
+        font-size: xx-large;
+        
+        >div {
+            background-color: #06040a;
+            border-radius: 5px;
+            margin-right: 10px;
+            padding: 5px;
+            width: fit-content;
+
+            &.won {
+                &#timer {
+                    color: #00ff6a;
+                }
+                &#bomb_count {
+                    color: white;
+                }
+            }
+        }
+    }
+
+
+
+    .center_child:has(#game_board.game_end) + .center_child_above {
+        display: flex;
+    }
+    .center_child_above {
+        position: absolute;
+        top: 0px;
+        width: 100vw;
+        height: 100vh;
+
+        display: none;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        .gif {
+            @media (orientation : landscape) {
+                height: 50%;
+                width: fit-content;
+            }
+            height: fit-content;
+            width: 50%;
+
+            display: none;
+        }
+
+        #settings {
+            display: none;
+            position: absolute;
+            background-color: #18111a;
+            color: white;
+
+            .setting_note {
+                display: none;
+            }
+        }
+
+        #game_menu {
+            display: flex;
+            >button {
+                margin-right: 5px;
+            }
+        }
+    }
+
+
+
+
+    .center_child {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #game_board_bg {
+        background-color: #e0c995;
+        color: #72203f;
+        
+        border-radius: 5px;
+        overflow: hidden;
+
+        @media (orientation : landscape) {
+            height: 95vh;
+            width: fit-content;
+        }
+        height: fit-content;
+        width: 95vw;
+        aspect-ratio: 1/1;
+    }
+
+    #game_board {
+        @media (orientation : landscape) {
+            height: 95vh;
+            width: fit-content;
+        }
+        height: fit-content;
+        width: 95vw;
+        aspect-ratio: 1/1;
+
+        display: grid;
+        grid-template-columns: repeat(13, 1fr);
+
+        >div {
+            aspect-ratio: 1/1;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &:not(.open_field) {
+                background-color: var(--board_color);
+
+                &:nth-child(even) {
+                    filter: brightness(90%);
+                }
+            }
+
+            &.open_field {
+                &.bomb_nr_1 {
+                    background-color: rgba(var(--bomb_color), 0.11);
+                }
+                &.bomb_nr_2 {
+                    background-color: rgba(var(--bomb_color), 0.22);
+                }
+                &.bomb_nr_3 {
+                    background-color: rgba(var(--bomb_color), 0.33);
+                }
+                &.bomb_nr_4 {
+                    background-color: rgba(var(--bomb_color), 0.44);
+                }
+                &.bomb_nr_5 {
+                    background-color: rgba(var(--bomb_color), 0.55);
+                }
+                &.bomb_nr_6 {
+                    background-color: rgba(var(--bomb_color), 0.66);
+                }
+                &.bomb_nr_7 {
+                    background-color: rgba(var(--bomb_color), 0.77);
+                }
+                &.bomb_nr_8 {
+                    background-color: rgba(var(--bomb_color), 0.88);
+                }
+                &.bomb {
+                    background-color: rgb(var(--bomb_color));
+                }
+            }
+            
+
+            >div {
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                >.svg_flag {
+                    height: 75%;
+                    aspect-ratio: 1/1;
+                    background-color: rgb(var(--bomb_color));
+                    -webkit-mask: url(assets/flag.svg) no-repeat center;
+                    mask: url(assets/flag.svg) no-repeat center;
+                }
+                
+                display: none;
+                &.flag_shown {
+                    display: flex;
+                }
+            }
+            
+            >span {
+                display: none;
+                font-size: large;
+                font-weight: bold;
+                user-select: none;
+            }
+            &.open_field>span {
+                display: block;
+            }
+        }
+
+        &.game_end {
+            &>div>span {
+                display: none;
+            }
+        }
+    }
+</style>
+<script src="./game.js"></script>
+</html>
