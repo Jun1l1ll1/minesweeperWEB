@@ -134,7 +134,7 @@ function toggleFlag(nr) {
     }
     document.getElementById("bomb_count").innerText = (bomb_amount-flags.length)<10 ? "0"+String(bomb_amount-flags.length) : bomb_amount-flags.length;
     
-    if (open_fields.length + flags.length == size*size) {
+    if (hasWon()) {
         gameEnd(true); // Won
     }
 }
@@ -153,7 +153,7 @@ function openField(nr, check_for_bomb=true) {
         }
     }
 
-    if (open_fields.length + flags.length == size*size) {
+    if (hasWon()) {
         gameEnd(true); // Won
     }
 }
@@ -226,6 +226,13 @@ function startTimer() {
 
 
 
+
+function hasWon() {
+    if (size*size - open_fields.length == bomb_amount) {
+        return true;
+    }
+    return false;
+}
 
 function gameEnd(won) {
     let board_div = document.getElementById("game_board");
