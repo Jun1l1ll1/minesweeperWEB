@@ -21,6 +21,8 @@ let map = undefined;
 let flags = [];
 let open_fields = [];
 
+let left_click_open_field = true;
+
 let timer = 0;
 let stop_timer = false;
 
@@ -39,17 +41,40 @@ for (let i=0; i < size*size; i++) {
 
 
 function leftClicked(nr) {
-    if (map == undefined) {
-        map = newMap(nr);
-        addNrToBoard();
-        startTimer();
+    if (left_click_open_field) {
+
+        if (map == undefined) {
+            map = newMap(nr);
+            addNrToBoard();
+            startTimer();
+        }
+        openField(nr);
+        openMoreIfZero(nr);
+
+    } else {
+        // If flag_toggle is toggled (reverse)
+        if (open_fields.includes(nr)) { // Stil open fields around if number is clicked
+            openAllIfFlagged(nr)
+        }
+        toggleFlag(nr);
     }
-    openField(nr);
-    openMoreIfZero(nr);
 }
 
 function rightClicked(nr) {
-    toggleFlag(nr);
+    if (left_click_open_field) {
+
+        toggleFlag(nr);
+
+    } else {
+        // If flag_toggle is toggled (reverse)
+        if (map == undefined) {
+            map = newMap(nr);
+            addNrToBoard();
+            startTimer();
+        }
+        openField(nr);
+        openMoreIfZero(nr);
+    }
 }
 
 
@@ -255,7 +280,12 @@ function gameEnd(won) {
     }
 }
 
-function restartGame() {
+function restartGame(from_settings=false) {
+    // Save settings if needed
+    if (from_settings) {
+        saveSettings();
+    }
+
     // Reset variables
     map = undefined;
 
@@ -346,20 +376,20 @@ function displaySettingsOnHTML() {
 }
 
 function showSettings() {
-    let setting_div = document.getElementById("settings");
+    let setting_div = document.getElementById("settings_overlay");
     let open_btn = document.getElementById("open_setting_btn");
     let save_btn = document.getElementById("save_setting_btn");
     let reset_btn = document.getElementById("restart_btn");
-
-    if (setting_div.style.display != "block") {
+    
+    if (setting_div.style.display != "flex") {
         reset_btn.style.display = "none";
         open_btn.style.display = "none";
-        save_btn.style.display = "block";
-        setting_div.style.display = "block";
+        // save_btn.style.display = "block";
+        setting_div.style.display = "flex";
     } else {
         reset_btn.style.display = "block";
         open_btn.style.display = "block";
-        save_btn.style.display = "none";
+        // save_btn.style.display = "none";
         setting_div.style.display = "none";
     }
 }
@@ -395,4 +425,13 @@ function saveSettings() {
         displayColorsOnHTML();
         showSettings();
     }
+}
+
+
+
+
+
+
+function toggleClickEvent() {
+    left_click_open_field = !left_click_open_field;
 }

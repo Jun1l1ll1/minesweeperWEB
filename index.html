@@ -9,8 +9,22 @@
     <div class="center_orientationaly">
         <div>
             <div id="game_stat_cont">
-                <div id="bomb_count">00</div>
-                <div id="timer">00:00</div>
+                <div>
+                    <div id="bomb_count">00</div>
+                    <div id="timer">00:00</div>
+                </div>
+                <button onclick="showSettings()">Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="center_orientationaly" style="right: 0px; bottom: 0px;">
+        <div>
+            <div id="flag_toggle_cont">
+                <label class="flag_switch">
+                    <input onclick="toggleClickEvent()" type="checkbox" name="flag_toggle" id="flag_toggle"/>
+                    <span class="flag_slider"></span>
+                </label>
             </div>
         </div>
     </div>
@@ -24,6 +38,14 @@
     <div class="center_child_above" id="end_overlay">
         <img class="gif" id="won_gif" src="assets/YAY.gif" alt="yay">
         <img class="gif" id="lost_gif" src="assets/sad.gif" alt="sad">
+
+        <div id="game_menu">
+            <button id="restart_btn" onclick="restartGame()">Restart</button>
+            <button id="open_setting_btn" onclick="showSettings()">Setting</button>
+        </div>
+    </div>
+
+    <div class="center_child_above" id="settings_overlay">
         <div id="settings">
             <label for="map_size">Size</label>
             <input type="number" name="map_size" id="map_size" value="9"/>
@@ -46,14 +68,12 @@
                 <label for="bomb_color">Bomb</label>
                 <input type="color" id="bomb_color" value="#000000">
             </div>
-        </div>
 
-        <div id="game_menu">
-            <button id="restart_btn" onclick="restartGame()">Restart</button>
-            <button id="open_setting_btn" onclick="showSettings()">Setting</button>
-            <button id="save_setting_btn" style="display: none;" onclick="saveSettings()">Save</button>
+            <button id="save_setting_btn" onclick="saveSettings()">Save</button>
+            <button id="restart_btn" onclick="restartGame(true)">Restart</button>
         </div>
     </div>
+
 </body>
 <style>
     body, html {
@@ -78,6 +98,9 @@
     :root {
         --bomb_color: 255, 255, 255;
         --board_color: #ffaccc;
+
+        --flag_toggle_size: 30px;
+        --flag_toggle_padding: 6px;
     }
 
 
@@ -101,6 +124,19 @@
             position: relative;
             display: flex;
             justify-content: center;
+            align-items: center;
+        }
+    }
+
+    #flag_toggle_cont {
+        position: absolute;
+        z-index: 10;
+        
+        @media (orientation : landscape) {
+            right: 2vw;
+        }
+        @media (orientation : portrait) {
+            bottom: 2vh;
         }
     }
 
@@ -114,25 +150,32 @@
         @media (orientation : portrait) {
             top: 2vh;
         }
-
-        display: flex;
-
-        color: red;
-        font-size: xx-large;
+        
+        >button {
+            margin-top: 10px;
+            background-color: #06040a;
+            color: rgba(255,255,255,.33);
+        }
         
         >div {
-            background-color: #06040a;
-            border-radius: 5px;
-            margin-right: 10px;
-            padding: 5px;
-            width: fit-content;
+            display: flex;
+            >div {
+                color: red;
+                font-size: xx-large;
 
-            &.won {
-                &#timer {
-                    color: #00ff6a;
-                }
-                &#bomb_count {
-                    color: white;
+                background-color: #06040a;
+                border-radius: 5px;
+                margin-right: 10px;
+                padding: 5px;
+                width: fit-content;
+
+                &.won {
+                    &#timer {
+                        color: #00ff6a;
+                    }
+                    &#bomb_count {
+                        color: white;
+                    }
                 }
             }
         }
@@ -140,7 +183,7 @@
 
 
 
-    .center_child:has(#game_board.game_end) + .center_child_above {
+    .center_child:has(#game_board.game_end) + #end_overlay {
         display: flex;
     }
     .center_child_above {
@@ -166,7 +209,6 @@
         }
 
         #settings {
-            display: none;
             position: absolute;
             background-color: #18111a;
             color: white;
@@ -305,6 +347,64 @@
             }
         }
     }
+
+
+
+    .flag_switch {
+        position: relative;
+        display: inline-block;
+        width: calc(var(--flag_toggle_size)*2 + var(--flag_toggle_padding)*2);
+        height: calc(var(--flag_toggle_size) + var(--flag_toggle_padding)*2);
+
+        input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+    }
+
+    /* The slider */
+    .flag_slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--board_color);
+        -webkit-transition: .4s;
+        transition: .4s;
+        border-radius: 5px;
+        
+        &:before {
+            position: absolute;
+            content: url(assets/bomb.svg);
+            height: var(--flag_toggle_size);
+            width: var(--flag_toggle_size);
+            left: var(--flag_toggle_padding);
+            bottom: var(--flag_toggle_padding);
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 5px;
+        }
+    }
+
+    #flag_toggle:checked + .flag_slider {
+        background-color: rgb(var(--bomb_color));
+    }
+
+    #flag_toggle:focus + .flag_slider {
+        box-shadow: 0 0 1px  rgb(var(--bomb_color));
+    }
+
+    #flag_toggle:checked + .flag_slider:before {
+        content: url(assets/flag.svg);
+        -webkit-transform: translateX(var(--flag_toggle_size));
+        -ms-transform: translateX(var(--flag_toggle_size));
+        transform: translateX(var(--flag_toggle_size));
+    }
+
+
 </style>
 <script src="./game.js"></script>
 </html>
