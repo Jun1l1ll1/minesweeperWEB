@@ -1,5 +1,5 @@
 
-let size = 21; // Should be odd
+let size = 27; // Should be odd
 let bomb_percent = 6; //(1/nr)
 let min_start = 3; // Should be odd (nr x nr of no bomb)
 const modes = {
@@ -17,28 +17,20 @@ let current_colors = {"bg":"#e0c995", "font":"#000000", "board":"#2b9e4d", "bomb
 displayColorsOnHTML();
 displaySettingsOnHTML();
 
+let left_click_open_field = true;
+
 let map = undefined;
 
 let flags = [];
 let open_fields = [];
-
-let left_click_open_field = true;
 
 let timer = 0;
 let stop_timer = false;
 
 let bomb_amount = 0;
 
-let board_div = document.getElementById("game_board");
-board_div.style.gridTemplateColumns = "repeat("+size+", 1fr)";
-for (let i=0; i < size*size; i++) {
-    board_div.innerHTML += `
-    <div id="${i}" onclick="leftClicked(${i})" oncontextmenu="rightClicked(${i});return false;">
-        <div id="flag_${i}"><div class="svg_flag"></div></div>
-        <span id="map_nr_${i}"></span>
-    </div>
-    `;
-}
+restartGame();
+
 
 
 function leftClicked(nr) {
@@ -380,6 +372,10 @@ function restartGame(from_settings=false) {
         `;
     }
     board_div.innerHTML = HTML_txt;
+    for (let i=0; i < size*size; i++) {
+        const boxHeight = document.getElementById(i).offsetHeight;
+        document.getElementById(`map_nr_${i}`).style.fontSize = `${(boxHeight*(2/3)).toString()}px`;
+    }
 }
 
 

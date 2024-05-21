@@ -330,10 +330,14 @@
                     display: flex;
                 }
             }
-            container-type: size;
+
+            /* container-type: size; */
             >span {
+                /* width: 100%;
+                height: 100%; */ /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
                 display: none;
-                font-size: 70cqh;
+                /* font-size: 100%;  */
+                /* container query units can be used (cqw & cqh), must have parent with container-type: size (https://stackoverflow.com/questions/30693928/how-to-make-font-size-relative-to-parent-div) */
                 font-weight: bold;
                 user-select: none;
             }
@@ -408,4 +412,5 @@
 
 </style>
 <script src="./game.js"></script>
+
 </html>
