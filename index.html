@@ -49,7 +49,8 @@
         <div id="settings">
             <label for="map_size">Size</label>
             <input type="number" name="map_size" id="map_size" value="9"/>
-            <span id="map_size_note" class="setting_note">Size must be an odd number between 0 and 22</span><br/>
+            <span id="map_size_note" class="setting_note">Size must be an odd number above 0</span>
+            <span>Big maps take longer to create</span><br/>
 
             <label for="bomb_percent">Bomb Chance - 1 in</label>
             <input type="number" name="bomb_percent" id="bomb_percent" value="6">
@@ -329,10 +330,10 @@
                     display: flex;
                 }
             }
-            
+            container-type: size;
             >span {
                 display: none;
-                font-size: large;
+                font-size: 70cqh;
                 font-weight: bold;
                 user-select: none;
             }

@@ -1,6 +1,7 @@
 
-let size = 15; // Should be odd
+let size = 21; // Should be odd
 let bomb_percent = 6; //(1/nr)
+let min_start = 3; // Should be odd (nr x nr of no bomb)
 const modes = {
     "Dark":{
         "Green":{"bg":"#e0c995", "font":"#000000", "board":"#2b9e4d", "bomb":"255, 0, 0"}
@@ -82,54 +83,108 @@ function rightClicked(nr) {
 function newMap(start) {
     let new_map = []; // Will be new_map[x][y] to get point
 
-    // Create bombs
     for (let x=0; x < size; x++) {
         new_map.push([]);
         for (let y=0; y < size; y++) {
-
-            if (Math.floor((Math.random() * bomb_percent)) == 0) {
+            if (Math.floor((Math.random() * bomb_percent)) == 0 && !isNearStart(start, x, y)) {
                 new_map[x].push("¤");
+                bomb_amount++;
+                if (y>0 && new_map[x][y-1]!="¤") {
+                    new_map[x][y-1] ++;
+                }
+                if (x>0 && y<size-1 && new_map[x-1][y+1]!="¤") {
+                    new_map[x-1][y+1] ++;
+                }
+                if (x>0 && new_map[x-1][y]!="¤") {
+                    new_map[x-1][y] ++;
+                }
+                if (x>0 && y>0 && new_map[x-1][y-1]!="¤") {
+                    new_map[x-1][y-1] ++;
+                }
             } else {
                 new_map[x].push(0);
-            }
-        
-        }
-    }
-
-    // Create open start
-    let min_start = 3;
-    for (let x=-Math.floor(min_start/2); x < min_start-Math.floor(min_start/2); x++) {
-        for (let y=-Math.floor(min_start/2); y < min_start-Math.floor(min_start/2); y++) {
-            try {
-                new_map[nrToCords(start)[0]+x][nrToCords(start)[1]+y] = 0;
-            } catch (err) {
-                // console.warn(err);
-            }
-        }
-    }
-
-    // Create numbers
-    for (let x=0; x < size; x++) {
-        for (let y=0; y < size; y++) {
-
-            if (new_map[x][y] == "¤") {
-                bomb_amount++;
-
-                for (let x1=-1; x1 <= 1; x1++) {
-                    for (let y1=-1; y1 <= 1; y1++) {
-                        try {
-                            if (new_map[x+x1][y+y1] != "¤" && Number.isInteger(new_map[x+x1][y+y1])) {
-                                new_map[x+x1][y+y1] ++;
-                            }
-                        } catch (err) {
-                            // console.warn(err);
-                        }
-                    }
+                if (y>0 && new_map[x][y-1]=="¤") {
+                    new_map[x][y] ++;
+                }
+                if (x>0 && y<size-1 && new_map[x-1][y+1]=="¤") {
+                    new_map[x][y] ++;
+                }
+                if (x>0 && new_map[x-1][y]=="¤") {
+                    new_map[x][y] ++;
+                }
+                if (x>0 && y>0 && new_map[x-1][y-1]=="¤") {
+                    new_map[x][y] ++;
                 }
             }
         
         }
     }
+
+    function isNearStart(start, x, y) {
+        let start_cords = nrToCords(start);
+
+        for (let x1=-Math.floor(min_start/2); x1<=Math.floor(min_start/2); x1++) {
+            for (let y1=-1; y1<=1; y1++) {
+                try {
+                    if (x == start_cords[0]+x1 && y == start_cords[1]+y1) {
+                        return true;
+                    }
+                } catch (err) { }
+            }
+        }
+
+        return false;
+    }
+
+
+    // // Create bombs
+    // for (let x=0; x < size; x++) {
+    //     new_map.push([]);
+    //     for (let y=0; y < size; y++) {
+
+    //         if (Math.floor((Math.random() * bomb_percent)) == 0) {
+    //             new_map[x].push("¤");
+    //         } else {
+    //             new_map[x].push(0);
+    //         }
+        
+    //     }
+    // }
+
+    // // Create open start
+    // let min_start = 3;
+    // for (let x=-Math.floor(min_start/2); x < min_start-Math.floor(min_start/2); x++) {
+    //     for (let y=-Math.floor(min_start/2); y < min_start-Math.floor(min_start/2); y++) {
+    //         try {
+    //             new_map[nrToCords(start)[0]+x][nrToCords(start)[1]+y] = 0;
+    //         } catch (err) {
+    //             // console.warn(err);
+    //         }
+    //     }
+    // }
+
+    // // Create numbers
+    // for (let x=0; x < size; x++) {
+    //     for (let y=0; y < size; y++) {
+
+    //         if (new_map[x][y] == "¤") {
+    //             bomb_amount++;
+
+    //             for (let x1=-1; x1 <= 1; x1++) {
+    //                 for (let y1=-1; y1 <= 1; y1++) {
+    //                     try {
+    //                         if (new_map[x+x1][y+y1] != "¤" && Number.isInteger(new_map[x+x1][y+y1])) {
+    //                             new_map[x+x1][y+y1] ++;
+    //                         }
+    //                     } catch (err) {
+    //                         // console.warn(err);
+    //                     }
+    //                 }
+    //             }
+    //         }
+        
+    //     }
+    // }
 
     document.getElementById("bomb_count").innerText = bomb_amount<10 ? "0"+String(bomb_amount) : bomb_amount;
     return new_map;
@@ -315,15 +370,16 @@ function restartGame(from_settings=false) {
 
     // Create new board
     board_div.style.gridTemplateColumns = "repeat("+size+", 1fr)";
-    board_div.innerHTML = "";
+    let HTML_txt = "";
     for (let i=0; i < size*size; i++) {
-        board_div.innerHTML += `
+        HTML_txt += `
         <div id="${i}" onclick="leftClicked(${i})" oncontextmenu="rightClicked(${i});return false;">
-            <div id="flag_${i}"><div class="svg_flag"></div></div>
-            <span id="map_nr_${i}"></span>
+        <div id="flag_${i}"><div class="svg_flag"></div></div>
+        <span id="map_nr_${i}"></span>
         </div>
         `;
     }
+    board_div.innerHTML = HTML_txt;
 }
 
 
@@ -398,7 +454,7 @@ function saveSettings() {
     let all_correct = true;
 
     let map_size_val = document.getElementById("map_size").value;
-    if (map_size_val%2 != 0 && map_size_val > 0 && map_size_val < 22) {
+    if (map_size_val%2 != 0 && map_size_val > 0) {
         size = map_size_val;
         document.getElementById("map_size_note").style.display = "none";
     } else {
