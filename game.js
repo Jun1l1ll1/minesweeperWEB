@@ -467,6 +467,15 @@ function saveSettings() {
         document.getElementById("bomb_percent_note").style.display = "block";
     }
 
+    let safe_start_val = document.getElementById("safe_start").value;
+    if (safe_start_val%2 != 0 && safe_start_val >= 1) {
+        min_start = safe_start_val;
+        document.getElementById("safe_start_note").style.display = "none";
+    } else {
+        all_correct = false;
+        document.getElementById("safe_start_note").style.display = "block";
+    }
+
     current_colors.board = document.getElementById("overlay_color").value;
     current_colors.bg = document.getElementById("open_color").value;
     current_colors.font = document.getElementById("text_color").value;
