@@ -21,6 +21,21 @@
     <div class="center_orientationaly" style="right: 0px; bottom: 0px;">
         <div>
             <div id="flag_toggle_cont">
+                <div id="tutorial_cont">
+                    <span>
+                        <div src="assets/mouse.svg" class="mouse_svg"></div>
+                        <div src="assets/click_left.svg" class="clicks_svg" id="left_click_svg"></div>
+                        <span id="left_open_span">Open field</span>
+                        <span id="left_flag_span">Place flag</span>
+                    </span>
+                    <span>
+                        <div src="assets/mouse.svg" class="mouse_svg"></div>
+                        <div src="assets/click_right.svg" class="clicks_svg" id="right_click_svg"></div>
+                        <span id="right_flag_span">Place flag</span>
+                        <span id="right_open_span">Open field</span>
+                    </span>
+                </div>
+
                 <label class="flag_switch">
                     <input onclick="toggleClickEvent()" type="checkbox" name="flag_toggle" id="flag_toggle"/>
                     <span class="flag_slider"></span>
@@ -99,6 +114,7 @@
     :root {
         --bomb_color: 255, 255, 255;
         --board_color: #ffaccc;
+        --field_color: #e0c995;
 
         --flag_toggle_size: 30px;
         --flag_toggle_padding: 6px;
@@ -138,6 +154,69 @@
         }
         @media (orientation : portrait) {
             bottom: 2vh;
+        }
+
+        #tutorial_cont {
+            display: flex;
+
+            @media (orientation : portrait) {
+                display: none;
+            }
+
+            >span {
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                color: white;
+
+                .mouse_svg {
+                    width: 5vw;
+                    aspect-ratio: 1;
+
+                    background-color: var(--board_color);
+                    -webkit-mask: url(assets/mouse.svg) no-repeat center;
+                    mask: url(assets/mouse.svg) no-repeat center;
+                }
+
+                .clicks_svg {
+                    position: absolute;
+                    width: 5vw;
+                    aspect-ratio: 1;
+                }
+                #left_click_svg {
+                    background-color: var(--field_color);
+                    -webkit-mask: url(assets/click_left.svg) no-repeat center;
+                    mask: url(assets/click_left.svg) no-repeat center;
+                }
+                #right_click_svg {
+                    background-color: rgb(var(--bomb_color));
+                    -webkit-mask: url(assets/click_right.svg) no-repeat center;
+                    mask: url(assets/click_right.svg) no-repeat center;
+                }
+
+                #left_open_span, #right_flag_span {
+                    display: block;
+                } 
+                #left_flag_span, #right_open_span {
+                    display: none;
+                }
+            }
+
+            &.swap_controls {
+                #left_click_svg {
+                    background-color: rgb(var(--bomb_color));
+                }
+                #right_click_svg {
+                    background-color: var(--field_color);
+                }
+
+                #left_open_span, #right_flag_span {
+                    display: none;
+                } 
+                #left_flag_span, #right_open_span {
+                    display: block;
+                }
+            }
         }
     }
 
@@ -239,7 +318,7 @@
     }
 
     #game_board_bg {
-        background-color: #e0c995;
+        background-color: var(--field_color);
         color: #72203f;
         
         border-radius: 5px;
@@ -355,9 +434,13 @@
 
 
 
+    
+
+
     .flag_switch {
+        margin-top: 30px;
+        float: right;
         position: relative;
-        display: inline-block;
         width: calc(var(--flag_toggle_size)*2 + var(--flag_toggle_padding)*2);
         height: calc(var(--flag_toggle_size) + var(--flag_toggle_padding)*2);
 
@@ -376,7 +459,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: var(--board_color);
+        background-color: var(--field_color);
         -webkit-transition: .4s;
         transition: .4s;
         border-radius: 5px;

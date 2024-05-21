@@ -404,10 +404,10 @@ function displayColorsOnHTML() {
     let board_bg_div = document.getElementById("game_board_bg")
     let r = document.querySelector(':root');
 
-    board_bg_div.style.backgroundColor = current_colors.bg;
     board_bg_div.style.color = current_colors.font;
     r.style.setProperty('--bomb_color', current_colors.bomb);
     r.style.setProperty('--board_color', current_colors.board);
+    r.style.setProperty('--field_color', current_colors.bg);
 }
 
 function changeColorToPreset(mode, color) {
@@ -486,4 +486,10 @@ function saveSettings() {
 
 function toggleClickEvent() {
     left_click_open_field = !left_click_open_field;
+    let tutorial_cont = document.getElementById("tutorial_cont");
+    if (tutorial_cont.className != "swap_controls") {
+        tutorial_cont.className = "swap_controls";
+    } else {
+        tutorial_cont.className = "";
+    }
 }
