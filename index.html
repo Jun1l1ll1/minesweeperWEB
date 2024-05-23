@@ -63,8 +63,8 @@
     <div class="center_child_above" id="settings_overlay">
         <div id="settings">
             <label for="map_size">Size</label>
-            <input type="number" name="map_size" id="map_size" value="9"/>
-            <span>Big maps take longer to create</span><br/>
+            <input type="number" name="map_size" id="map_size" value="9"/><br/>
+            <span>(Big maps take longer to create)</span><br/>
             <span id="map_size_note" class="setting_note">Size must be an odd number above 0</span><br/><br/>
 
             <label for="bomb_percent">Bomb Chance - 1 in</label>
@@ -75,22 +75,28 @@
             <input type="number" name="safe_start" id="safe_start" value="3"> <span>^2</span><br/>
             <span id="safe_start_note" class="setting_note">Must be an odd number above 0</span><br/><br/>
 
-            <div>
-                <label for="overlay_color">Overlay</label>
-                <input type="color" id="overlay_color" value="#000000">
-
-                <label for="open_color">Open</label>
-                <input type="color" id="open_color" value="#000000">
-                
-                <label for="text_color">Text</label>
-                <input type="color" id="text_color" value="#000000">
-                
-                <label for="bomb_color">Bomb</label>
-                <input type="color" id="bomb_color" value="#000000">
+            <span>Colors of the game</span>
+            <div id="color_picker_cont">
+                <div>
+                    <label for="overlay_color">Overlay</label><br/>
+                    <input type="color" id="overlay_color" value="#000000">
+                </div>
+                <div>
+                    <label for="open_color">Open</label><br/>
+                    <input type="color" id="open_color" value="#000000">
+                </div>
+                <div>
+                    <label for="text_color">Text</label><br/>
+                    <input type="color" id="text_color" value="#000000">
+                </div>
+                <div>
+                    <label for="bomb_color">Bomb</label><br/>
+                    <input type="color" id="bomb_color" value="#000000">
+                </div>                
             </div><br/>
 
             <button id="save_setting_btn" onclick="saveSettings()">Save</button>
-            <button id="restart_btn" onclick="restartGame(true)">Restart</button>
+            <button id="restart_btn" onclick="restartGame(true)">Save & restart</button>
         </div>
     </div>
 
@@ -119,6 +125,7 @@
         --bomb_color: 255, 255, 255;
         --board_color: #ffaccc;
         --field_color: #e0c995;
+        --text_color: #000000;
 
         --flag_toggle_size: 30px;
         --flag_toggle_padding: 6px;
@@ -296,9 +303,42 @@
             position: absolute;
             background-color: #18111a;
             color: white;
+            padding: 10px;
+            border-radius: 5px;
+            min-width: 20vw;
+
+            input {
+                background-color: #06040a;
+                color-scheme: dark;
+                border: none;
+                border-radius: 5px;
+                padding: 5px;
+                color: white;
+                width: 3rem;
+                &[type=color] {
+                    width: 4rem;
+                    height: 4rem;
+                }
+            }
+
+            #color_picker_cont {
+                display: flex;
+                justify-content: space-evenly;
+            }
+
+            button {
+                background-color: var(--field_color);
+                color: var(--text_color);
+                font-weight: bold;
+                &#restart_btn {
+                    background-color: rgb(var(--bomb_color));
+                }
+            }
 
             .setting_note {
                 display: none;
+                color: rgb(var(--bomb_color));
+                text-shadow: .5px .5px 0px #ff0000;
             }
         }
 
@@ -323,7 +363,7 @@
 
     #game_board_bg {
         background-color: var(--field_color);
-        color: #72203f;
+        color: var(--text_color);
         
         border-radius: 5px;
         overflow: hidden;

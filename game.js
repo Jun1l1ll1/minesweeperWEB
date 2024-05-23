@@ -401,13 +401,14 @@ function hexToRgb(hex) {
 
 
 function displayColorsOnHTML() {
-    let board_bg_div = document.getElementById("game_board_bg")
+    // let board_bg_div = document.getElementById("game_board_bg")
     let r = document.querySelector(':root');
 
-    board_bg_div.style.color = current_colors.font;
+    // board_bg_div.style.color = current_colors.font;
     r.style.setProperty('--bomb_color', current_colors.bomb);
     r.style.setProperty('--board_color', current_colors.board);
     r.style.setProperty('--field_color', current_colors.bg);
+    r.style.setProperty('--text_color', current_colors.font);
 }
 
 function changeColorToPreset(mode, color) {
@@ -430,18 +431,15 @@ function displaySettingsOnHTML() {
 function showSettings() {
     let setting_div = document.getElementById("settings_overlay");
     let open_btn = document.getElementById("open_setting_btn");
-    let save_btn = document.getElementById("save_setting_btn");
     let reset_btn = document.getElementById("restart_btn");
     
     if (setting_div.style.display != "flex") {
         reset_btn.style.display = "none";
         open_btn.style.display = "none";
-        // save_btn.style.display = "block";
         setting_div.style.display = "flex";
     } else {
         reset_btn.style.display = "block";
         open_btn.style.display = "block";
-        // save_btn.style.display = "none";
         setting_div.style.display = "none";
     }
 }
