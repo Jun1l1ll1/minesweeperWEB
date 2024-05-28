@@ -62,41 +62,49 @@
 
     <div class="center_child_above" id="settings_overlay">
         <div id="settings">
-            <label for="map_size">Size</label>
-            <input type="number" name="map_size" id="map_size" value="9"/><br/>
-            <span>(Big maps take longer to create)</span><br/>
+            <span>Map size </span><span class="NB_note">(Big maps take longer to create)</span><br/>
+            <div id="map_size_inp_div">
+                <label for="map_size"><img src="assets/size.svg" alt="MIT license"></label>
+                <input type="number" name="map_size" id="map_size" value="9"/><br/>
+            </div>
             <span id="map_size_note" class="setting_note">Size must be an odd number above 0</span><br/><br/>
-
-            <label for="bomb_percent">Bomb Chance - 1 in</label>
-            <input type="number" name="bomb_percent" id="bomb_percent" value="6"><br/>
-            <span id="bomb_percent_note" class="setting_note">Number must be more then 0</span><br/><br/>
-
-            <label for="safe_start">Guaranteed start</label>
-            <input type="number" name="safe_start" id="safe_start" value="3"> <span>^2</span><br/>
-            <span id="safe_start_note" class="setting_note">Must be an odd number above 0</span><br/><br/>
-
+            
             <span>Colors of the game</span>
             <div id="color_picker_cont">
                 <div>
-                    <label for="overlay_color">Overlay</label><br/>
+                    <label for="overlay_color"><div class="display_svg" style="--icon: url(assets/overlay_icon.svg)"></div></label><br/>
                     <input type="color" id="overlay_color" value="#000000">
                 </div>
                 <div>
-                    <label for="open_color">Open</label><br/>
+                    <label for="open_color"><div class="display_svg" style="--icon: url(assets/open_field_icon.svg)"></div></label><br/>
                     <input type="color" id="open_color" value="#000000">
                 </div>
                 <div>
-                    <label for="text_color">Text</label><br/>
+                    <label for="text_color"><div class="display_svg" style="--icon: url(assets/text_icon.svg)"></div></label><br/>
                     <input type="color" id="text_color" value="#000000">
                 </div>
                 <div>
-                    <label for="bomb_color">Bomb</label><br/>
+                    <label for="bomb_color"><div class="display_svg" style="--icon: url(assets/flag.svg)"></div></label><br/>
                     <input type="color" id="bomb_color" value="#000000">
                 </div>                
-            </div><br/>
+            </div><br/><br/>
+            
+            <button id="adv_settings_btn" onclick="showAdvSettings()">Advanced settings</button>
+            <div id="adv_settings_div">
+                <br/>
+                <label for="bomb_percent">Bomb Chance - 1 in</label>
+                <input type="number" name="bomb_percent" id="bomb_percent" value="6"><br/>
+                <span id="bomb_percent_note" class="setting_note">Number must be more then 0</span><br/>
+    
+                <label for="safe_start">Guaranteed start</label>
+                <input type="number" name="safe_start" id="safe_start" value="3"> <span>^2</span><br/>
+                <span id="safe_start_note" class="setting_note">Must be an odd number above 0</span>
+            </div><br/><br/>
 
-            <button id="save_setting_btn" onclick="saveSettings()">Save</button>
-            <button id="restart_btn" onclick="restartGame(true)">Save & restart</button>
+            <div style="margin-top: 20px;">
+                <button id="save_setting_btn" onclick="saveSettings()">Save</button>
+                <button id="restart_btn" onclick="restartGame(true)">Save & restart</button>
+            </div>
         </div>
     </div>
 
@@ -131,6 +139,14 @@
         --flag_toggle_padding: 6px;
     }
 
+
+    .display_svg {
+        --icon: url(assets/text_icon.svg);
+
+        background-color: white;
+        -webkit-mask: var(--icon) no-repeat center;
+        mask: var(--icon) no-repeat center;
+    }
 
 
     .center_orientationaly {
@@ -305,7 +321,19 @@
             color: white;
             padding: 10px;
             border-radius: 5px;
-            min-width: 20vw;
+            box-sizing: border-box;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            @media (orientation : landscape) {
+                height: 93vh;
+                width: fit-content;
+            }
+            height: fit-content;
+            width: 90vw;
+            aspect-ratio: 1/1;
 
             input {
                 background-color: #06040a;
@@ -315,15 +343,74 @@
                 padding: 5px;
                 color: white;
                 width: 3rem;
-                &[type=color] {
+            }
+
+            #map_size_inp_div {
+                display: flex;
+                align-items: center;
+                img {
+                    width: 3rem;
+                    aspect-ratio: 1;
+                } 
+                input {
+                    margin-left: 10px;
                     width: 4rem;
-                    height: 4rem;
+                    font-size: 1.5rem;
                 }
             }
 
             #color_picker_cont {
-                display: flex;
-                justify-content: space-evenly;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+
+                >div {
+                    position: relative;
+                    width: 100%;
+                    height: 5rem;
+
+                    label {
+                        position: absolute;
+                        height: 100%;
+                        width: 100%;
+                        z-index: 5;
+                        pointer-events: none;
+                        
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        >div {
+                            background-color: var(--text_color);
+                            height: 90%;
+                            max-width: 90%;
+                            aspect-ratio: 1;
+                        }
+                        &[for="text_color"]>div {
+                            background-color: var(--field_color);
+                        }
+                    }
+                    input {
+                        position: absolute;
+                        cursor: pointer;
+                        top: 0px;
+                        width: 100%;
+                        height: 100%;
+                        
+                        border: none;
+                        &::-webkit-color-swatch-wrapper {
+                            padding: 0;
+                        }
+                        &::-webkit-color-swatch {
+                            border: none;
+                        }
+
+                        &#overlay_color{ background-color: var(--board_color); }
+                        &#open_color{ background-color: var(--field_color); }
+                        &#text_color{ background-color: var(--text_color); }
+                        &#bomb_color{ background-color: rgb(var(--bomb_color)); }
+                    }
+                }
             }
 
             button {
@@ -335,17 +422,44 @@
                 }
             }
 
+            #adv_settings_btn {
+                background-color: rgba(0,0,0,0);
+                color: white;
+                opacity: .5;
+                font-weight: normal;
+                text-decoration: underline;
+                width: fit-content;
+            }
+            #adv_settings_div {
+                display: none;
+            }
+
             .setting_note {
                 display: none;
                 color: rgb(var(--bomb_color));
                 text-shadow: .5px .5px 0px #ff0000;
             }
+            .NB_note {
+                opacity: .5;
+            }
         }
 
         #game_menu {
             display: flex;
+            background-color: #18111a;
+            padding: 10px;
+            border-radius: 5px;
             >button {
-                margin-right: 5px;
+                color: var(--text_color);
+                font-weight: bold;
+                
+                &#restart_btn {
+                    margin-right: 5px;
+                    background-color: rgb(var(--bomb_color));
+                }
+                &#open_setting_btn {
+                    background-color: var(--field_color);
+                }
             }
         }
     }

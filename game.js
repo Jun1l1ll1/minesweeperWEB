@@ -1,5 +1,5 @@
 
-let size = 27; // Should be odd
+let size = 17; // Should be odd
 let bomb_percent = 6; //(1/nr)
 let min_start = 3; // Should be odd (nr x nr of no bomb)
 const modes = {
@@ -429,18 +429,25 @@ function displaySettingsOnHTML() {
 }
 
 function showSettings() {
+    let game_menu_div = document.getElementById("game_menu");
     let setting_div = document.getElementById("settings_overlay");
-    let open_btn = document.getElementById("open_setting_btn");
-    let reset_btn = document.getElementById("restart_btn");
     
     if (setting_div.style.display != "flex") {
-        reset_btn.style.display = "none";
-        open_btn.style.display = "none";
+        game_menu_div.style.display = "none";
         setting_div.style.display = "flex";
     } else {
-        reset_btn.style.display = "block";
-        open_btn.style.display = "block";
+        game_menu_div.style.display = "block";
         setting_div.style.display = "none";
+        document.getElementById("adv_settings_div").style.display = "none";
+    }
+}
+
+function showAdvSettings() {
+    let adv_setting_div = document.getElementById("adv_settings_div");
+    if (adv_setting_div.style.display != "block") {
+        adv_setting_div.style.display = "block";
+    } else {
+        adv_setting_div.style.display = "none";
     }
 }
 
