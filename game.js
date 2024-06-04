@@ -26,6 +26,7 @@ let open_fields = [];
 
 let timer = 0;
 let stop_timer = false;
+let died = false;
 
 let bomb_amount = 0;
 
@@ -301,7 +302,7 @@ function startTimer() {
 
 
 function hasWon() {
-    if (size*size - open_fields.length == bomb_amount) {
+    if (!died && size*size - open_fields.length == bomb_amount) {
         return true;
     }
     return false;
@@ -324,6 +325,7 @@ function gameEnd(won) {
     } else {
         document.getElementById("lost_gif").style.display = "block";
         console.log("You lost");
+        died = true;
     }
 }
 
@@ -341,6 +343,7 @@ function restartGame(from_settings=false) {
 
     timer = 0;
     stop_timer = false;
+    died = false;
 
     bomb_amount = 0;
 
