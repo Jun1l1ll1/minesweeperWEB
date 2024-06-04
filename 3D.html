@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minesweeper</title>
+    <title>Layered Minesweeper</title>
 </head>
-<body note="DONT CHEAT!!!!">
-    <button id="treeD_swap_btn">3D<span>Comming soon?????</span></button>
-
+<body>
+    
     <div class="center_orientationaly">
         <div>
             <div id="game_stat_cont">
@@ -46,11 +45,17 @@
         </div>
     </div>
 
+
+
+
     <div class="center_child">
-        <div id="game_board_bg">
-            <div id="game_board"></div>
+        <div class="game_board_bg"> <!--Changed from id to class (must be fixed in js too)-->
+            <div class="game_board"></div> <!--Changed from id to class (must be fixed in js too)-->
         </div>
     </div>
+
+
+
 
     <div class="center_child_above" id="end_overlay">
         <img class="gif" id="won_gif" src="assets/YAY.gif" alt="yay">
@@ -501,7 +506,7 @@
         align-items: center;
     }
 
-    #game_board_bg {
+    .game_board_bg {
         background-color: var(--field_color);
         color: var(--text_color);
         
@@ -517,7 +522,7 @@
         aspect-ratio: 1/1;
     }
 
-    #game_board {
+    .game_board {
         @media (orientation : landscape) {
             height: 95vh;
             width: fit-content;
@@ -678,6 +683,7 @@
 
 
 </style>
-<script src="./game.js"></script>
+<!-- <script src="./game.js"></script> -->
+<!-- ^ Make js for this too (reuse much) -->
 
 </html>

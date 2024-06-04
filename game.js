@@ -1,4 +1,6 @@
 
+console.log("%cHello!", "font-size: 3rem; background: #ffc000; font-weight: bold; padding: 10px; border-radius: 50%"); console.log("%cWebsite by Juni", "background: #ff7777; font-weight: bold; padding: 5px; padding-right: 10px; border-radius: 5px; border-top-right-radius: 50%; border-bottom-right-radius: 50%");
+
 let size = 17; // Should be odd
 let bomb_percent = 6; //(1/nr)
 let min_start = 3; // Should be odd (nr x nr of no bomb)
